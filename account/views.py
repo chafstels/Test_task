@@ -1,7 +1,9 @@
 from rest_framework.viewsets import ModelViewSet
+
+from .permissoins import IsOwnerOfProfile
 from .serializers import RegistrationSerializer, ActivationSerializer, UserSerializer, ResetPasswordSerializer, \
     ConfirmPasswordSerializer, LogoutSerializer
-from rest_framework.generics import GenericAPIView, get_object_or_404
+from rest_framework.generics import GenericAPIView, get_object_or_404, RetrieveUpdateDestroyAPIView
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import permissions
@@ -113,15 +115,20 @@ class ResetPasswordConfirmView(GenericAPIView):
         return Response('Your password has been successfully updated.', status=200)
 
 
-class UserProfileVIEW(GenericAPIView):
+class UserProfileVIEW(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = IsOwnerOfProfile, permissions.IsAuthenticated
 
-    def get(self, request):
-        user = request.user
-        profile = get_object_or_404(User, email=user.email)
-        serializer = UserSerializer(instance=profile)
-        return Response(serializer.data, status=200)
+    def get_object(self):
+        queryset = self.get_queryset()
+        user = self.request.user
+        obj = get_object_or_404(queryset, email=user.email)
+
+        self.check_object_permissions(self.request, obj)
+
+        return obj
+
 
 def auth_github(request):
     return render(request, 'oauth_github.html')
