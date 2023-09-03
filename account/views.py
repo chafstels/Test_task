@@ -1,23 +1,23 @@
+from rest_framework.viewsets import ModelViewSet
 from .serializers import RegistrationSerializer, ActivationSerializer, UserSerializer, ResetPasswordSerializer, \
     ConfirmPasswordSerializer, LogoutSerializer
 from rest_framework.generics import GenericAPIView, get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import permissions, generics
-from rest_framework.generics import ListAPIView
+from rest_framework import permissions
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from .task import send_connfirmation_email_task, send_confirmation_password_task
 from django.shortcuts import get_object_or_404, render
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 
 User = get_user_model()
 
 
-class RegistrationView(APIView):
-    permission_classes = (permissions.AllowAny,)
+class RegistrationView(GenericAPIView):
+    permission_classes = permissions.AllowAny,
+    serializer_class = RegistrationSerializer
 
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
@@ -33,6 +33,7 @@ class RegistrationView(APIView):
 
 
 class ActivationView(GenericAPIView):
+    permission_classes = permissions.AllowAny,
     serializer_class = ActivationSerializer
 
     def get(self, request):
@@ -54,13 +55,13 @@ class LoginView(TokenObtainPairView):
     permission_classes = (permissions.AllowAny,)
 
 
-class UserListView(ListAPIView):
+class UserView(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = permissions.IsAdminUser,
 
 
-class LogoutView(generics.GenericAPIView):
+class LogoutView(GenericAPIView):
     permission_classes = permissions.IsAuthenticated,
     serializer_class = LogoutSerializer
 
@@ -75,7 +76,9 @@ class LogoutView(generics.GenericAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class ResetPasswordView(APIView):
+class ResetPasswordView(GenericAPIView):
+    permission_classes = permissions.AllowAny,
+    serializer_class = ConfirmPasswordSerializer
     def get(self, request):
         return Response({'message': 'Please provide an email to reset the password.'})
 
@@ -94,7 +97,9 @@ class ResetPasswordView(APIView):
         return Response(serializer.errors, status=400)
 
 
-class ResetPasswordConfirmView(APIView):
+class ResetPasswordConfirmView(GenericAPIView):
+    permission_classes = permissions.AllowAny,
+    serializer_class = ResetPasswordSerializer
 
     def post(self, request):
         code = request.GET.get('u')

@@ -51,8 +51,7 @@ class ActivationSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ('password',)
-
+        exclude = ('password', 'groups', 'activation_code', 'is_superuser', 'is_staff', 'user_permissions', 'is_active')
 
 
 class ResetPasswordSerializer(serializers.Serializer):
