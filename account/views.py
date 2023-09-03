@@ -8,7 +8,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from .task import send_connfirmation_email_task, send_confirmation_password_task
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
@@ -117,3 +117,6 @@ class UserProfileVIEW(GenericAPIView):
         profile = get_object_or_404(User, email=user.email)
         serializer = UserSerializer(instance=profile)
         return Response(serializer.data, status=200)
+
+def auth_github(request):
+    return render(request, 'oauth_github.html')

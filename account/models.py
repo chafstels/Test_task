@@ -13,11 +13,7 @@ class UserManager(BaseUserManager):
             return ValueError('Mail should definitely be handed over ')
         email = self.normalize_email(email=email)
         user = self.model(email=email, **kwargs)
-        phone_number = kwargs.get('phone_number')
-        if phone_number:
-            user.create_phone_number_code()
-        else:
-            user.create_activation_code()
+        user.create_activation_code()
         user.set_password(password)
         user.save()
         return user
@@ -58,11 +54,6 @@ class CustomUser(AbstractUser):
         return self.email
 
     def create_activation_code(self):
-        import uuid
-        code = str(uuid.uuid4())
-        self.activation_code = code
-
-    def create_phone_number_code(self):
         code = get_random_string(6, allowed_chars='123456789')
         self.activation_code = code
         return code
