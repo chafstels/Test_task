@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
 
     # LIBRARIES
     'rest_framework',
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     'django_filters',
     'celery',
     'django_celery_beat',
+    'social_django',
 
     # APP
     'account',
@@ -60,6 +62,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -80,6 +84,17 @@ DATABASES = {
         'PORT': config('PORT', cast=int),
     }
 }
+
+
+AUTHENTICATION_BACKENDS = (
+    # 'social_core.backends.open_id.OpenIdAuth',
+    # 'social_core.backends.google.GoogleOpenId',
+    # 'social_core.backends.google.GoogleOAuth2',
+    # 'social_core.backends.google.GoogleOAuth',
+    'social_core.backends.github.GithubOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -135,6 +150,8 @@ REST_FRAMEWORK = {
     ),
 }
 
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
 # SIMPLEJWT SETTINGS
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
@@ -171,3 +188,5 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 
+SOCIAL_AUTH_GITHUB_KEY = 'e9c4062253402c008c8d'
+SOCIAL_AUTH_GITHUB_SECRET = '92cea0f3b510be268bd7744b7cd3b909d0c3392d'
