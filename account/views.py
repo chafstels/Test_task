@@ -1,9 +1,9 @@
 from .serializers import RegistrationSerializer, ActivationSerializer, UserSerializer, ResetPasswordSerializer, \
-    ConfirmPasswordSerializer
+    ConfirmPasswordSerializer, LogoutSerializer
 from rest_framework.generics import GenericAPIView, get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import permissions
+from rest_framework import permissions, generics
 from rest_framework.generics import ListAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
@@ -60,8 +60,9 @@ class UserListView(ListAPIView):
     permission_classes = (permissions.AllowAny,)
 
 
-class LogoutView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+class LogoutView(generics.GenericAPIView):
+    permission_classes = permissions.IsAuthenticated,
+    serializer_class = LogoutSerializer
 
     def post(self, request):
         try:
@@ -109,7 +110,7 @@ class ResetPasswordConfirmView(APIView):
 
 class UserProfileVIEW(GenericAPIView):
     serializer_class = UserSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
         user = request.user

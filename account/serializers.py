@@ -75,3 +75,6 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 class ConfirmPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField(required=True)
