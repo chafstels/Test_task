@@ -1,0 +1,14 @@
+SECRET_KEY=django-insecure-2*r4t94dov1!av8+)p8v!o#@zfglv3wi)%rvybx7x_7%-i8u%s
+DEBUG=True
+
+ALLOWED_HOSTS=127.0.0.1
+
+DATABASE
+NAME=ubuntu
+USER=ubuntu
+PASSWORD=1
+HOST=db
+PORT=5432
+
+EMAIL_HOST_PASSWORD=
+EMAIL_HOST_USER=
