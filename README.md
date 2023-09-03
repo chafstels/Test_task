@@ -9,7 +9,7 @@ To start the project, follow these steps:
 1. Clone the repository using the command:
 
    ```bash
-   git clone git@github.com:chafstels/qortex.git
+   https://github.com/chafstels/Test_task.git
 
 2. Create an .env file and copy all the text from the example_env file into it. This file will contain the configuration settings for your project.
    ```bash
